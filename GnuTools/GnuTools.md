@@ -1,5 +1,7 @@
 # GNU Tools
-To begin, C++ is a an Agnostic language, compiled language meaning that it can be executed on a variety of hardware platforms and operating systems.  Since I tend to support both Windows and Linux platforms, I often find myself using multiple tool chains during development and debugging.  Below is information about a number of GNU tools often associated with the Linux operating system.  Fundamentally though, GNU is an extensive collection of free software, which can be used as an operating system or can be used in parts with other operating systems. 
+To begin, C++ is a an platform agnostic, compiled language meaning that it can be executed on a variety of hardware platforms and operating systems.  Since I tend to support both Windows and Linux platforms, I often find myself using multiple tool chains during development and debugging.  Below is information about a number of GNU tools often associated with the Linux operating system.  Fundamentally though, GNU is an extensive collection of free software, which can be used as an operating system or can be used in parts with other operating systems.
+
+The first two sections discuss the GNU compiler and make system.  An example of their use is documented in the [Compile.md](./Compile.md) markdown file where I hope to walk through in detail their general use.
 
 ## GCC/g++
 GCC is the GNU Compiler Collection supporting multiple programming languages, hardware architecture, and operating systems.  While there are multiple options, I tend to gravitate to GCC specifically because it is the standard compiler for most GNU project, including the Linux kernel itself, and has been ported to more platforms and instruction set architectures than any other compiler.
