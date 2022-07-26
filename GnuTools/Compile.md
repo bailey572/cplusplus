@@ -9,11 +9,13 @@ That being said, if you look around at enough projects you will begin to see a p
 ```bash
 Project_name
   |
-  |---- makefile
+  |---- Makefile
   |
   |---- bin
   |
   |---- data
+  |
+  |---- doc
   |
   |---- inc
   |       |
@@ -55,31 +57,33 @@ Project_name
 
 Great! so what does that all mean? Well lets break it down.
 
-* Makefile - this single file located in the root of the project diretory will be responsible for orchestrating the entire build operation
-* bin - is the directory where we will store the compiled executable files that we build
-* data - directory to store any support data, files, documentation, or scripts that the project may need
-* inc - collection of an include files that will be publicly distributed with compiled library files for other projects consumption.
-* libraries - collection of third party libraries that will be leveraged by the project
-* libs - is the directory where we will store the compiled libraries (static and dynamic) files that we build
+* Makefile - this single file located in the root of the project directory will be responsible for orchestrating the entire build operation to include calling additional Magefiles if required.  The root directory is recommended but can be overridden through the command line
+* bin - is the directory where we will store the compiled executable files that we build (only applicable to applications)
+* data - directory to store any support data, files, or scripts that the project may need to build or run
+* doc - documentation for the project.  Often located in the data but a separate directory is cleaned in my opinion
+* inc - collection of included header files that will be publicly distributed with compiled library files for external projects consumption.
+* libraries - collection of third party libraries and header files that will be leveraged by the project
+* libs - directory where we will store compiled libraries (static and dynamic) files that we build
 * objs - staging directory for objects built during compilation to keep source area clean
-* src - primary source code for the project where each module directory contains an inc and src directory
+* src - source code for the project where each module directory contains an inc and src directory
   * inc - collection of private header files for the module
   * src - modules raw source code
 * test - source code for the projects unit tests
+
 ## Install GNU tools
+
+I am writing this while working on a Mac and a Linux Mint box.  By default, Mac uses clang so to install the Gnu tools, I leveraged the [Homebrew](https://brew.sh/) package manager.  To install brew, follow the installation instructions on their [Homepage](https://brew.sh/).  
+Once complete, you should be able to install the the gnu tools with the following commands.
+
 ```bash
 brew install gcc
 brew install make
 ```
-GNU "make" has been installed as "gmake".
-If you need to use it as "make", you can add a "gnubin" directory
-to your PATH from your bashrc like:
 
-     PATH="$(brew --prefix)/opt/make/libexec/gnubin:$PATH"
 
 ## Install Boost
 
-I am doing this on a Mac, Apple sucks so I suggest using [Homebrew](https://brew.sh/)
+I am doing this on a Mac, Apple sucks so I suggest using 
 
 ```bash
 brew install boost
