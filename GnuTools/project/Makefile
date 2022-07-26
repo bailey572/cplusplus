@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------------------#
 
 # Executable
-TARGET := program
+TARGET := project
 
 # Project structure
 PROJECT_DIRECTORY  := .
@@ -85,8 +85,8 @@ all: build $(APP_DIRECTORY)/$(TARGET)
 $(APP_DIRECTORY)/$(TARGET): $(OBJECTS)
 	@echo "Linking..."
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LDFLAGS) -o $@ $^ $(LDLIBS)
-	@echo "Copying target to project directory..."
-	cp $(APP_DIRECTORY)/$(TARGET) $(PROJECT_DIRECTORY)/$(TARGET)
+#	@echo "Copying target to project directory..."
+#	cp $(APP_DIRECTORY)/$(TARGET) $(PROJECT_DIRECTORY)/$(TARGET)
 
 # The rule that compiles ‘.cpp’ files into ‘.o’ files.
 # The recipe uses the automatic variables ‘$@’ and ‘$<’ to substitute the names
@@ -112,7 +112,7 @@ build:
 	@$(MKDIR_P) $(TESTS_DIRECTORY)
 
 # -g: Produce debugging information in the operating system's native format.
-debug: CXXFLAGS += -DDEBUG -g
+ debug: CXXFLAGS += -DDEBUG -g
 debug: all
 
 # -O0: Reduce compilation time and make debugging produce the expected results.
@@ -130,7 +130,7 @@ release: CXXFLAGS += -O2
 release: all
 
 # Delete all files (and directories) that are normally created by running make.
-clean:
+ clean:
 	@echo "Cleaning..."
 	@$(RM) $(OBJECTS_DIRECTORY)
 	@$(RM) $(APP_DIRECTORY)/$(TARGET)

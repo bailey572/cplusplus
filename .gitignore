@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+.vscode/configurationCache.log
+.vscode/dryrun.log
+GnuTools/project/bin/
+GnuTools/project/libs/
+GnuTools/project/objs/
+.vscode/settings.json
+.vscode/targets.log
