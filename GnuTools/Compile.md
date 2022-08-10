@@ -70,23 +70,39 @@ Great! so what does that all mean? Well lets break it down.
   * src - modules raw source code
 * test - source code for the projects unit tests
 
-## Install GNU tools
+## Quick installation for me
 
-I am writing this while working on a Mac and a Linux Mint box.  By default, Mac uses clang so to install the Gnu tools, I leveraged the [Homebrew](https://brew.sh/) package manager.  To install brew, follow the installation instructions on their [Homepage](https://brew.sh/).  
-Once complete, you should be able to install the the gnu tools with the following commands.
+I am writing this while working on a Mac M1 arm chip and sometimes a Linux Mint box.  By default, Mac uses clang so to install the additional tools, I leverage the [Homebrew](https://brew.sh/) package manager.  To install brew, follow the installation instructions on their [Homepage](https://brew.sh/).
 
+### Install GNU tools
+
+To install the gnu tools with Homebrew.
+  
 ```bash
 brew install gcc
 brew install make
 ```
 
+To install the gnu tools on mint.
 
-## Install Boost
+```bash
+sudo apt install gcc
+sudo apt install make
+```
 
-I am doing this on a Mac, Apple sucks so I suggest using 
+### Install Boost
 
+While you can compile from source, you can also just install the libraries
+
+To install with Homebrew.
+  
 ```bash
 brew install boost
 ```
 
-1.76.0	Collection of portable C++ source libraries
+To install on mint.
+
+```bash
+sudo apt install boost
+```
+

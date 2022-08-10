@@ -32,7 +32,9 @@ OBJECTS  := $(patsubst $(SOURCES_DIRECTORY)/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(SOU
 SHELL = /bin/sh
 
 # Program for compiling C++ programs; default ‘g++’.
-CXX := g++
+CXX := /opt/homebrew/bin/g++-12
+#CXX := g++
+#CXX := /usr/bin/clang
 
 # Extra flags to give to the C++ compiler.
 # -std: standard
@@ -59,11 +61,13 @@ LDLIBS := #-lstdc++ -lm
 #         turned into a precompiled header.
 INCLUDES := -I$(INCLUDE_DIRECTORY)
 
+REQUIRES = Boost.Test.Included
+
 # Command to remove a file; default ‘rm -f’.
 # r: recursive, v: verbose, f: force.
 RM = rm -rvf
 
-# Make directory if it does not exsist.
+# Make directory if it does not exist.
 MKDIR_P := mkdir -p -v
 
 #-----------------------------------------------------------------------------#
@@ -72,7 +76,7 @@ MKDIR_P := mkdir -p -v
 
 # A phony target is one that is not really the name of a file; rather it is
 # just a name for a recipe to be executed when you make an explicit request.
-.PHONY: all build clean debug release
+.PHONY: all build clean debug release test
 
 # Make all the top-level targets the makefile knows about.
 all: build $(APP_DIRECTORY)/$(TARGET)
@@ -112,7 +116,7 @@ build:
 	@$(MKDIR_P) $(TESTS_DIRECTORY)
 
 # -g: Produce debugging information in the operating system's native format.
- debug: CXXFLAGS += -DDEBUG -g
+debug: CXXFLAGS += -DDEBUG -g
 debug: all
 
 # -O0: Reduce compilation time and make debugging produce the expected results.
@@ -130,8 +134,32 @@ release: CXXFLAGS += -O2
 release: all
 
 # Delete all files (and directories) that are normally created by running make.
- clean:
+clean:
 	@echo "Cleaning..."
 	@$(RM) $(OBJECTS_DIRECTORY)
 	@$(RM) $(APP_DIRECTORY)/$(TARGET)
 	@$(RM) $(TARGET)
+
+# test:  
+# 	@echo "Testing..."
+# ####Look what I stole
+# test: $(TARGETS) $(addprefix run-,$(TARGETS))
+
+# %: %.cpp
+# 	$(CXX) -o$@ $^ -lboost_unit_test_framework
+
+# run-%: %
+# 	-./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
+# ####Look what I stole
+
+# # C ++ source code which must be preprocessed.
+# SOURCES  = $(wildcard $(TESTS_DIRECTORY)/*.cpp)
+
+# # By default, the object file name for a source file is made by replacing the
+# # suffix .c, .cpp, .i, .s, etc., with .o.
+# OBJECTS  = $(patsubst $(TESTS_DIRECTORY)/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(SOURCES))
+
+# #	@echo "Testing after build..."
+# $(OBJECTS): $(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp
+# 	@echo "Compiling..."
+# 	$(CXX) -c $(CXXFLAGS) $(INCLUDES) $< -o $@
