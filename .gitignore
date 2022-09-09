@@ -26,6 +26,10 @@
 *.a
 *.lib
 
+# Generated Unit Test artifacts
+*.log
+*.test
+
 # Executables
 *.exe
 *.out

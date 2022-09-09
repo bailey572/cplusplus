@@ -16,7 +16,7 @@ DATA_DIRECTORY     := data
 SOURCES_DIRECTORY  := src/src
 TESTS_DIRECTORY    := tests
 
-# C ++ source code which must be preprocessed.
+# C ++ application source code which must be preprocessed.
 SOURCES  := $(wildcard $(SOURCES_DIRECTORY)/*.cpp)
 
 # By default, the object file name for a source file is made by replacing the
@@ -36,6 +36,9 @@ CXX := /opt/homebrew/bin/g++-12
 #CXX := g++
 #CXX := /usr/bin/clang
 
+# Define library specific directories not expected to be in the environment paths
+BOOST_ROOT := "/opt/homebrew/Cellar/boost/1.79.0_1"
+
 # Extra flags to give to the C++ compiler.
 # -std: standard
 # -pedantic-errors: Issue all the errors demanded by strict ISO C and ISO C++.
@@ -54,20 +57,20 @@ LDFLAGS := #-L/usr/lib
 # Library flags or names given to compilers when they are supposed to invoke
 # the linker, ‘ld’. Non-library linker flags, such as -L, should go in the
 # LDFLAGS variable.
-LDLIBS := #-lstdc++ -lm
+LDLIBS := -L$(BOOST_ROOT)/lib #-lstdc++ -lm
 
 # -I dir: Add the directory dir to the list of directories to be searched for
 #         header files. C, C++ , Objective-C or Objective-C++ header file to be
 #         turned into a precompiled header.
-INCLUDES := -I$(INCLUDE_DIRECTORY)
-
-REQUIRES = Boost.Test.Included
+INCLUDES := -I$(BOOST_ROOT)/include \
+           -I$(INCLUDE_DIRECTORY)
 
 # Command to remove a file; default ‘rm -f’.
 # r: recursive, v: verbose, f: force.
 RM = rm -rvf
 
 # Make directory if it does not exist.
+# p: Create intermediate directories as required, v: Create intermediate directories as required
 MKDIR_P := mkdir -p -v
 
 #-----------------------------------------------------------------------------#
@@ -78,7 +81,7 @@ MKDIR_P := mkdir -p -v
 # just a name for a recipe to be executed when you make an explicit request.
 .PHONY: all build clean debug release test
 
-# Make all the top-level targets the makefile knows about.
+# Make all the top-level targets the makefile knows about. First calls target build and then $(APP_DIRECTORY)/$(TARGET)
 all: build $(APP_DIRECTORY)/$(TARGET)
 
 # The rule that links libraries to the target.
@@ -139,27 +142,26 @@ clean:
 	@$(RM) $(OBJECTS_DIRECTORY)
 	@$(RM) $(APP_DIRECTORY)/$(TARGET)
 	@$(RM) $(TARGET)
+	@$(RM) $(TESTS_DIRECTORY)/*.test
+	@$(RM) $(TESTS_DIRECTORY)/*.log
 
-# test:  
-# 	@echo "Testing..."
-# ####Look what I stole
-# test: $(TARGETS) $(addprefix run-,$(TARGETS))
+# Wildcard is a built in function for filenames. If TESTS_DIRECTORY has files named 'foo.cpp bar.cpp max.txt', 
+# TEST_SRCS will only contain 'foo.cpp bar.cpp'.
+TEST_SRCS := $(wildcard $(TESTS_DIRECTORY)/*.cpp)
+# ':%.cpp=%' is a substitution reference. In this case, if TEST_SRCS has values 'foo.cpp bar.cpp', 
+# TEST_BINS will have values 'foo bar'.
+TEST_BINS := $(TEST_SRCS:%.cpp=%)
 
-# %: %.cpp
-# 	$(CXX) -o$@ $^ -lboost_unit_test_framework
+# For unit tests, we first built the project (debug) before creating and runnig the tests
+test: debug $(TEST_BINS)
 
-# run-%: %
-# 	-./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
-# ####Look what I stole
-
-# # C ++ source code which must be preprocessed.
-# SOURCES  = $(wildcard $(TESTS_DIRECTORY)/*.cpp)
-
-# # By default, the object file name for a source file is made by replacing the
-# # suffix .c, .cpp, .i, .s, etc., with .o.
-# OBJECTS  = $(patsubst $(TESTS_DIRECTORY)/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(SOURCES))
-
-# #	@echo "Testing after build..."
-# $(OBJECTS): $(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp
-# 	@echo "Compiling..."
-# 	$(CXX) -c $(CXXFLAGS) $(INCLUDES) $< -o $@
+# For each
+%: %.cpp
+	$(CXX) $(INCLUDES) -o $@.test $^ 
+# Once test module is build, run the test
+	-./$@.test --output_format=HRF --log_level=all > $(^)-report.log
+# <HRF|CLF|XML>
+# --log_level=<all|success|test_suite|unit_scope|message|warning|error|cpp_exception|system_error|fatal_error|nothing>
+#run-%: %
+#	-./$(TESTS_DIRECTORY))/$^
+#	-./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
