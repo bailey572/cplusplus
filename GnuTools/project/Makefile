@@ -159,7 +159,8 @@ test: debug $(TEST_BINS)
 %: %.cpp
 	$(CXX) $(INCLUDES) -o $@.test $^ 
 # Once test module is build, run the test
-	-./$@.test --output_format=HRF --log_level=all > $(^)-report.log
+	-./$@.test --output_format=CLF --log_level=all > $(^)-report.log
+# time mks means microseconds, due to russian speakers
 # <HRF|CLF|XML>
 # --log_level=<all|success|test_suite|unit_scope|message|warning|error|cpp_exception|system_error|fatal_error|nothing>
 #run-%: %
