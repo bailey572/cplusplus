@@ -3,7 +3,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include "BasicMath.h"
 
-/* Teet known version */
+/* Test known version */
 BOOST_AUTO_TEST_CASE( get_version  )
 {
     BOOST_CHECK_EQUAL (BasicMath::get_version(), 0.1);

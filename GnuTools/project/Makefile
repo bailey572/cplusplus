@@ -2,7 +2,7 @@
 #  EXECUTABLE, SOURCES, OBJECTS AND PROJECT STRUCTURE                         #
 #-----------------------------------------------------------------------------#
 
-# Executable
+# Target is the final name for the Executable
 TARGET := project
 
 # Project structure
@@ -10,10 +10,10 @@ PROJECT_DIRECTORY  := .
 APP_DIRECTORY      := bin
 OBJECTS_DIRECTORY  := objs
 DOCUMENT_DIRECTORY := doc
-INCLUDE_DIRECTORY  := src/inc
+INCLUDE_DIRECTORY  := inc
 LIBRARY_DIRECTORY  := libs
 DATA_DIRECTORY     := data
-SOURCES_DIRECTORY  := src/src
+SOURCES_DIRECTORY  := src
 TESTS_DIRECTORY    := tests
 
 # C ++ application source code which must be preprocessed.
@@ -117,6 +117,7 @@ build:
 	@$(MKDIR_P) $(LIBRARY_DIRECTORY)
 	@$(MKDIR_P) $(SOURCES_DIRECTORY)
 	@$(MKDIR_P) $(TESTS_DIRECTORY)
+	@$(MKDIR_P) $(TESTS_DIRECTORY)/$(APP_DIRECTORY)
 
 # -g: Produce debugging information in the operating system's native format.
 debug: CXXFLAGS += -DDEBUG -g
@@ -142,8 +143,7 @@ clean:
 	@$(RM) $(OBJECTS_DIRECTORY)
 	@$(RM) $(APP_DIRECTORY)/$(TARGET)
 	@$(RM) $(TARGET)
-	@$(RM) $(TESTS_DIRECTORY)/*.test
-	@$(RM) $(TESTS_DIRECTORY)/*.log
+	@$(RM) $(TESTS_DIRECTORY)/$(APP_DIRECTORY)
 
 # Wildcard is a built in function for filenames. If TESTS_DIRECTORY has files named 'foo.cpp bar.cpp max.txt', 
 # TEST_SRCS will only contain 'foo.cpp bar.cpp'.
@@ -152,17 +152,33 @@ TEST_SRCS := $(wildcard $(TESTS_DIRECTORY)/*.cpp)
 # TEST_BINS will have values 'foo bar'.
 TEST_BINS := $(TEST_SRCS:%.cpp=%)
 
-# For unit tests, we first built the project (debug) before creating and runnig the tests
-test: debug $(TEST_BINS)
+# For unit tests, we first built the project (release) before creating and runnig the tests
+test: release $(TEST_BINS)
 
-# For each
+# Use a pattern rule, a pattern rule looks like an ordinary rule, except that its target contains the character ‘%’ (exactly one of them). 
+# The target is considered a pattern for matching file names; the ‘%’ can match any nonempty substring, while other characters match only 
+# themselves. The prerequisites likewise use ‘%’ to show how their names relate to the target name.
+# So For each entry in TEST_BINS we execute the compile command
 %: %.cpp
-	$(CXX) $(INCLUDES) -o $@.test $^ 
-# Once test module is build, run the test
-	-./$@.test --output_format=CLF --log_level=all > $(^)-report.log
+	$(CXX) $(INCLUDES) -o $(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(@F).test $^
+# Once test module is built, run the test and log the results
+	$(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(@F).test --output_format=CLF --log_level=all > $(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(^F)-report.log
+
+
 # time mks means microseconds, due to russian speakers
 # <HRF|CLF|XML>
 # --log_level=<all|success|test_suite|unit_scope|message|warning|error|cpp_exception|system_error|fatal_error|nothing>
 #run-%: %
 #	-./$(TESTS_DIRECTORY))/$^
 #	-./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
+#	-./$@.test --output_format=CLF --log_level=all > $(^)-report.log
+#	@echo "variable @" $@
+#	@echo "variable % " $%
+#	@echo "variable < " $<
+#	@echo "variable ? " $?
+#	@echo "variable ^ " $^
+#	@echo "variable + " $+
+#	@echo "variable | " $|
+#	@echo "variable * " $*
+#	@echo "variable ? " $?
+#	$(CXX) $(INCLUDES) -o $@.test $^ 
