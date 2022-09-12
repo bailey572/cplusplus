@@ -41,3 +41,9 @@ GnuTools/project/libs/
 GnuTools/project/objs/
 .vscode/settings.json
 .vscode/targets.log
+
+.DS_Store
+.editorconfig
+c_cpp_properties.json
+extensions.json
+settings.json
