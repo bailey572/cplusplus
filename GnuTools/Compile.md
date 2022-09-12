@@ -2,7 +2,7 @@
 
 ## Directory Structure
 
-C++ allows for infinite customization and the build systems supporting it follow the same philosophy.  What does that mean exactly?  Well, it means that if you can dream of a project layout, you can make it happen and there is not definitive setup required for a C/C++ project.  With that freedom however comes the ability to create an infinite number of pits to fall into.
+C++ allows for infinite customization and the build systems supporting it follow the same philosophy.  What does that mean exactly?  Well, it means that if you can dream of a project layout, you can make it happen and there is no definitive setup required for a C/C++ project.  With that freedom however comes the ability to create an infinite number of pits to fall into.
 
 That being said, if you look around at enough projects you will begin to see a pattern emerge.  Sprinkle in my own preferences and I tend to gravitate towards a project pattern that generally looks like this.
 
@@ -18,11 +18,7 @@ Project_name
   |---- doc
   |
   |---- inc
-  |       |
-  |       |---- Module_name
-  |                 |
-  |                 |---- public_header(s).h
-  | 
+  |
   |---- libraries
   |       |
   |       |---- Third Party A
@@ -39,20 +35,9 @@ Project_name
   |              |----code.o
   |
   |---- src
-  |       |
-  |       |---- Module_name
-  |              |
-  |              |----inc
-  |                    |---- private_header(s).h
-  |
-  |              |----src
-  |                    |---- code(s).cpp
   |
   |---- tests
-  |       |
-  |       |---- Module_name
-  |               |
-  |               |---- unit_test(s).cpp
+  |
 ```
 
 Great! so what does that all mean? Well lets break it down.
@@ -61,14 +46,16 @@ Great! so what does that all mean? Well lets break it down.
 * bin - is the directory where we will store the compiled executable files that we build (only applicable to applications)
 * data - directory to store any support data, files, or scripts that the project may need to build or run
 * doc - documentation for the project.  Often located in the data but a separate directory is cleaned in my opinion
-* inc - collection of included header files that will be publicly distributed with compiled library files for external projects consumption.
+* inc - collection of header files
 * libraries - collection of third party libraries and header files that will be leveraged by the project
 * libs - directory where we will store compiled libraries (static and dynamic) files that we build
 * objs - staging directory for objects built during compilation to keep source area clean
-* src - source code for the project where each module directory contains an inc and src directory
-  * inc - collection of private header files for the module
-  * src - modules raw source code
+* src - source code for the project
 * test - source code for the projects unit tests
+
+Of course, this can be extended in a myriad of ways.  One of my favorites is to put a top level makefile to call into individual modules that I store under the src directory, each with their own makefiles.  These are called by a top level makefile that is basically only for creating global variables that are exported and iterating over the sub directories.
+
+If your environment is all setup, lets go ahead and more over to [Projects Makefile](./project/Makefile.md).  If not, feel free to keep reading to see what I had to do.
 
 ## Quick installation for me
 
@@ -76,14 +63,14 @@ I am writing this while working on a Mac M1 arm chip and sometimes a Linux Mint 
 
 ### Install GNU tools
 
-To install the gnu tools with Homebrew.
+To install the gnu tools with Homebrew (MAC).
   
 ```bash
 brew install gcc
 brew install make
 ```
 
-To install the gnu tools on mint.
+To install the gnu tools on mint (Linux).
 
 ```bash
 sudo apt install gcc
@@ -94,15 +81,14 @@ sudo apt install make
 
 While you can compile from source, you can also just install the libraries
 
-To install with Homebrew.
+To install with Homebrew (MAC).
   
 ```bash
 brew install boost
 ```
 
-To install on mint.
+To install on mint (Linux).
 
 ```bash
 sudo apt install boost
 ```
-
