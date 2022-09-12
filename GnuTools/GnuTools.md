@@ -46,7 +46,10 @@ On execution, gmake will by default look in the current directory for a Makefile
 
 While most often associated with the compilation of C/C++ files into objects, libraries, and executables, it can be used for almost any language compile and really any scripted process.  involves executing arbitrary commands to transform a source file to a target result.
 
-For detailed information please refer to the [GMake Official Documentation](https://www.gnu.org/software/make/manual/make.html)
+For more information, check out the projects makefile and writeup [Makefile Writeup](./project/Makefile.md)
+
+For all of the information you could ever want, please refer to the [GMake Official Documentation](https://www.gnu.org/software/make/manual/make.html)
+
 ## gprof
 gprof calculates the amount of time spent in each routine.
 

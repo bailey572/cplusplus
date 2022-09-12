@@ -13,33 +13,73 @@ target: prerequisites
 	recipe
 ```
 
-One way that I like to visual a makefile rule as a function declaration with an implicit return value.  Take for example:
+Wow, that is a lot of words that if you are like most people, do not tell you crap so let's break that down a bit.  Please note, my descriptions may not be completely accurate as the make document but are accurate to the level we need them at this point.
 
-```C++
-void myFunctionLabel (parameters) // declaration
-{
-    // body (definition)
-}
-```
-
-The target is the label for the task, the prerequisites are the parameters, and the recipe is the functions body.  While this is close enough to help align the pieces in your mind, the comparison is not completely accurate, so let's dig a little deeper into what each piece really is.
+The target is the label for the task, the prerequisites are targets that need to occur before executing the target, and the recipe is the actual rules that will be executed.
 
 Much like the label of a function in C/C++, the target is a named handle for that target.  Additionally, or more specifically, the target is actually a file name, how that file name is treated is dependent on the recipe.  For now, just remember that a target can be either a task label or a file name and we will discuss the why in just a bit.
 
-Prerequisites are zero or more dependencies of the target.  Unlike function variables, the dependencies of a target are not passed https://bytes.usc.edu/cs104/wiki/makefile/ (STOPPED HERE)  Dependencies can either be other targets or file names; if a target depends on another target, it guarantees that target will be run prior, and if a target depends on a file, it will check to see if that file has changed to avoid executing redundantly.
+Prerequisites are zero or more dependencies the target requires to have executed prior to its own processing.  These can be variable assignment, inline functions, or calls to additional targets.  If a target depends on another target, it guarantees that target will be run prior, and if a target depends on a file, it will check to see if that file has changed to avoid executing redundantly.
+
+Last but not least we have the recipe.  The recipe is one or more sequential steps that can consist of shell script, shell commands, additional targets, built in functions or just about anything else one could want.
+
+The kicker is that each item in a recipe must be proceeded by the tab character.  A real tab character ASCII code 09 = HT ( Horizontal Tab ) and not just white space.
+
+For further clarification, let's review the following makefile source.
 
 ```bash
 all: program
+	@echo "Finished program"
 
 program: main.cpp file1.o file2.o
+	@echo "Compiling main.cpp"
 	g++ -g -Wall main.cpp file1.o file2.o -o program
 
 file1.o: file1.cpp file1.h
+	@echo "Building file1.o"
 	g++ -g -Wall -c file1.cpp -o file1.o
 
 file2.o: file2.cpp
+	@echo "Building file2.o"
 	g++ -g -Wall -c file2.cpp -o file2.o
 
 clean:
 	rm -f *.o program
 ```
+
+As you can see, there are five separate targets in this example (all, program, file1.o, file2.c, and clean).  
+
+If you were to call the clean target, make clean, only a single target would be executed, calling the shell command rm -f on all *.o files and the program.  Pretty straight forward right?
+
+If you were to call the all target, make all, the first thing to be executed would be the prerequisite targets, and their prerequisites targets, until the final target executes its recipes.  Once that recipes is complete, the calling targets recipe is executed all the way back up the line.  The echo statements would produce the following:
+
+```bash
+Building file1.o
+Building file2.o
+Compiling main.cpp
+Finished program
+```
+
+But wait, what about the target main.cpp?  Well, it gets called before file1 or file2 but does not have a named target but it does have a file and this will be processed by the default make rules where the presence of the main.ccp file will execute the targets recipe.
+
+You can prove this by creating a makefile, file2.cpp, file1.cpp, main.cpp.  Populate the files and run make all.
+
+If you want to make it a little easier and just see the steps in action, just create and populate a make file with the following content.
+
+```bash
+all: program
+	@echo "Finished program"
+
+program: file1.o file2.o
+	@echo "Compiling main.cpp"
+
+file1.o:
+	@echo "Building file1.o"
+
+file2.o:
+	@echo "Building file2.o"
+```
+
+This demonstrates the steps and can be a fun way to play with rules.
+
+## Playing with Variables
