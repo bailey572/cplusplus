@@ -5,7 +5,7 @@
 # Target is the final name for the Executable
 TARGET := project
 
-# Project structure
+# Project structure defined as local variables
 PROJECT_DIRECTORY  := .
 APP_DIRECTORY      := bin
 OBJECTS_DIRECTORY  := objs
@@ -16,11 +16,14 @@ DATA_DIRECTORY     := data
 SOURCES_DIRECTORY  := src
 TESTS_DIRECTORY    := tests
 
-# C ++ application source code which must be preprocessed.
+# C ++ application source code which must be preprocessed using the builtin wildcard function.
+# Wildcard expansion happens automatically in rules. But wildcard expansion does not normally
+# take place when a variable is set, or inside the arguments of a function. 
 SOURCES  := $(wildcard $(SOURCES_DIRECTORY)/*.cpp)
 
 # By default, the object file name for a source file is made by replacing the
 # suffix .c, .cpp, .i, .s, etc., with .o.
+# $(subst from,to,text) Performs a textual replacement on the text each occurrence of from is replaced by to. 
 OBJECTS  := $(patsubst $(SOURCES_DIRECTORY)/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(SOURCES))
 
 #-----------------------------------------------------------------------------#
@@ -40,7 +43,7 @@ CXX := /opt/homebrew/bin/g++-12
 BOOST_ROOT := "/opt/homebrew/Cellar/boost/1.79.0_1"
 
 # Extra flags to give to the C++ compiler.
-# -std: standard
+# -std: standard or c++17 for the C++ 17 standards
 # -pedantic-errors: Issue all the errors demanded by strict ISO C and ISO C++.
 # -Wall: Enables all the warnings about constructions.
 # -Wextra: Enables some extra warning flags that are not enabled by -Wall.
@@ -50,18 +53,17 @@ BOOST_ROOT := "/opt/homebrew/Cellar/boost/1.79.0_1"
 CXXFLAGS := -std=c++17 -pedantic-errors -Wall -Wextra -Werror -Wshadow -m64
 
 # Extra flags to give to compilers when they are supposed to invoke the linker,
-# ‘ld’, such as -L. Libraries (-lfoo) should be added to the LDLIBS variable
-# instead.
+# ‘ld’, such as -L for library directories. 
+#Libraries (-lfoo) should be added to the LDLIBS variable instead.
 LDFLAGS := #-L/usr/lib
 
 # Library flags or names given to compilers when they are supposed to invoke
-# the linker, ‘ld’. Non-library linker flags, such as -L, should go in the
-# LDFLAGS variable.
+# the linker, 
+# ‘ld’. Non-library linker flags, such as -L, should go in the LDFLAGS variable.
 LDLIBS := -L$(BOOST_ROOT)/lib #-lstdc++ -lm
 
-# -I dir: Add the directory dir to the list of directories to be searched for
-#         header files. C, C++ , Objective-C or Objective-C++ header file to be
-#         turned into a precompiled header.
+# -I dir: Add the directory dir to the list of directories to be searched for header files.
+# C, C++ , Objective-C or Objective-C++ header file to be turned into a precompiled header.
 INCLUDES := -I$(BOOST_ROOT)/include \
            -I$(INCLUDE_DIRECTORY)
 
@@ -77,8 +79,8 @@ MKDIR_P := mkdir -p -v
 #  RECIPES                                                                    #
 #-----------------------------------------------------------------------------#
 
-# A phony target is one that is not really the name of a file; rather it is
-# just a name for a recipe to be executed when you make an explicit request.
+# A phony target is one that is not really the name of a file; rather it is just a name for a recipe to be
+# executed when you make an explicit request.
 .PHONY: all build clean debug release test
 
 # Make all the top-level targets the makefile knows about. First calls target build and then $(APP_DIRECTORY)/$(TARGET)
@@ -101,7 +103,7 @@ $(APP_DIRECTORY)/$(TARGET): $(OBJECTS)
 # $@: The file name of the target.
 # $<: The name of the first prerequisite.
 $(OBJECTS): $(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp
-	@echo "Compiling..."
+	@echo "Compiling objects..."
 	$(CXX) -c $(CXXFLAGS) $(INCLUDES) $< -o $@
 
 # When a line starts with ‘@’, the echoing of that line is suppressed. The ‘@’
@@ -109,6 +111,7 @@ $(OBJECTS): $(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp
 # this for a command whose only effect is to print something, such as an echo
 # command to indicate progress through the makefile.
 build:
+	@echo "Building directories..."
 	@$(MKDIR_P) $(APP_DIRECTORY)
 	@$(MKDIR_P) $(OBJECTS_DIRECTORY)
 	@$(MKDIR_P) $(DOCUMENT_DIRECTORY)
@@ -162,23 +165,6 @@ test: release $(TEST_BINS)
 %: %.cpp
 	$(CXX) $(INCLUDES) -o $(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(@F).test $^
 # Once test module is built, run the test and log the results
+# Boost Unit test supports three output options HRF=Human Readable Format, CLF=command line feed ,XML=XML
+# and the following log levels all|success|test_suite|unit_scope|message|warning|error|cpp_exception|system_error|fatal_error|nothing
 	$(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(@F).test --output_format=CLF --log_level=all > $(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(^F)-report.log
-
-
-# time mks means microseconds, due to russian speakers
-# <HRF|CLF|XML>
-# --log_level=<all|success|test_suite|unit_scope|message|warning|error|cpp_exception|system_error|fatal_error|nothing>
-#run-%: %
-#	-./$(TESTS_DIRECTORY))/$^
-#	-./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
-#	-./$@.test --output_format=CLF --log_level=all > $(^)-report.log
-#	@echo "variable @" $@
-#	@echo "variable % " $%
-#	@echo "variable < " $<
-#	@echo "variable ? " $?
-#	@echo "variable ^ " $^
-#	@echo "variable + " $+
-#	@echo "variable | " $|
-#	@echo "variable * " $*
-#	@echo "variable ? " $?
-#	$(CXX) $(INCLUDES) -o $@.test $^ 
