@@ -35,12 +35,19 @@ OBJECTS  := $(patsubst $(SOURCES_DIRECTORY)/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(SOU
 SHELL = /bin/sh
 
 # Program for compiling C++ programs; default ‘g++’.
-CXX := /opt/homebrew/bin/g++-12
-#CXX := g++
+# Apple Mac M1 clange
 #CXX := /usr/bin/clang
+# Apple Mac GNU
+#CXX := /opt/homebrew/bin/g++-12
+# Ubuntu/Mint Linux
+CXX := g++
+
 
 # Define library specific directories not expected to be in the environment paths
-BOOST_ROOT := "/opt/homebrew/Cellar/boost/1.79.0_1"
+# Apple Mac M1 brew boost
+#BOOST_ROOT := "/opt/homebrew/Cellar/boost/1.79.0_1"
+# Ubuntu/Mint Linux boost
+BOOST_ROOT := "/usr/include/boost"
 
 # Extra flags to give to the C++ compiler.
 # -std: standard or c++17 for the C++ 17 standards
