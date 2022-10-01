@@ -196,9 +196,29 @@ $^ | List of all prerequisites
 $? | List of all prerequisites that are newer than the target
 $* | The "stem" of an implicit or pattern rule
 
-## Conclusion
+## A simple example
 
-There is a lot more to variables in makefiles but this will get you started.  Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information and to delve into some cool subjects like nested variables or computed variable names.
+If you have pulled down this repository, you will find a heavily commented [makefile](./Makefile) in the same directory as this markdown file.  The comments should give anyone a pretty good idea as to what is going on but a little bit of help is always nice
+
+The top section contains a collection of simply expanded variables defining the environment, some shell commands, and the binaries name.
+
+The rest of the file contains the definitions for all of the targets (all, build, clean, debug, release, & test), their prerequisites, and recipes.
+
+Target | Description
+:----: | :-----------------------
+all | Default target and calls the build target before building the source code and linking the final application
+build | Builds the needed temporary directories, not the code
+clean | Removes the temporary directories
+debug | sets compiler flags variable before calling all
+release | sets compiler flags variable before calling all
+test | calls release before building and running the boost unit test based files before executing each test
+
+## Summary
+
+There is a lot more to variables in makefiles but this will get you started.  
+
+Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information and to delve into some cool subjects like nested variables or computed variable names.
 
 Also, there is a pretty good quick reference at [Rip Tutorial](https://riptutorial.com/makefile).
 
+ 
