@@ -90,5 +90,5 @@ brew install boost
 To install on mint (Linux).
 
 ```bash
-sudo apt install boost
+sudo apt install libboost-all-dev
 ```
