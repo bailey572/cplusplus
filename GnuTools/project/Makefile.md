@@ -196,4 +196,9 @@ $^ | List of all prerequisites
 $? | List of all prerequisites that are newer than the target
 $* | The "stem" of an implicit or pattern rule
 
+## Conclusion
+
 There is a lot more to variables in makefiles but this will get you started.  Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information and to delve into some cool subjects like nested variables or computed variable names.
+
+Also, there is a pretty good quick reference at [Rip Tutorial](https://riptutorial.com/makefile).
+
