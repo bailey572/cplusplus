@@ -24,7 +24,7 @@ Much like the label of a function in C/C++, the target is a named handle for tha
 
 ### Prerequisites
 
-Prerequisites are zero or more dependencies the target requires to have executed prior to its own processing.  These can be variable assignment, inline functions, or calls to additional targets.  If a target depends on another target, it guarantees that target will be run prior, and if a target depends on a file, it will check to see if that file has changed to avoid executing redundantly.  When reading a list of prerequisites, you should read them from right to left as that is how they will be executed.
+Prerequisites are zero or more dependencies the target requires to be executed prior to its own processing.  These can be variable assignment, inline functions, or calls to additional targets.  If a target depends on another target, it guarantees that target will be run prior, and if a target depends on a file, it will check to see if that file has changed to avoid executing redundantly.  When reading a list of prerequisites, you should read them from right to left as that is how they will be executed.
 
 For example:
 
@@ -32,7 +32,7 @@ For example:
 $(OBJECTS): $(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp
 ```
 
-The target $(OBJECTS) and the prerequisites $(OBJECTS_DIRECTORY)/%.o and $(SOURCES_DIRECTORY)/%.cpp.  $(SOURCES_DIRECTORY)/%.cpp will be executed first, followed by $(OBJECTS_DIRECTORY)/%.o, and only then will the target $(OBJECTS) recipe be executed.
+The target ```$(OBJECTS)``` and its prerequisites ``$(OBJECTS_DIRECTORY)/%.o and $(SOURCES_DIRECTORY)/%.cpp.  $(SOURCES_DIRECTORY)/%.cpp`` will be executed first, followed by ```$(OBJECTS_DIRECTORY)/%.o```, and only then will the target ```$(OBJECTS)``` recipe be executed.
 
 ### Recipe
 
