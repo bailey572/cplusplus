@@ -38,7 +38,7 @@ The target ```$(OBJECTS)``` and its prerequisites ``$(OBJECTS_DIRECTORY)/%.o and
 
 Last but not least we have the recipe.  The recipe is one or more sequential steps that can consist of shell script, shell commands, additional targets, built in functions or just about anything else one could want.
 
-The kicker is that **each item in a recipe must be proceeded by the tab character**.  A **REAL** tab character, ala ASCII code 09 = HT ( Horizontal Tab ) and not just white space.  Space, ASCII code 20, will look right but fail to execute the line.
+The kicker is that **each item in a recipe must be proceeded by the tab character**.  A **REAL** tab character, ala ASCII code 09 = HT (Horizontal Tab) and not just white space.  Space, ASCII code 20, will look right but fail to execute the line.
 
 For further clarification, let's review the following makefile source.
 
