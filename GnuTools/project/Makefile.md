@@ -119,6 +119,22 @@ please note, the quotes in the above example are actually not required but is a 
 
 Variables defined with ‘=’ are recursively expanded variables. Variables defined with ‘:=’ or ‘::=’ are simply expanded variables; these definitions can contain variable references which will be expanded before the definition is made.
 
+Another often used assignment operator that you will run across is conditional assignment ?= operator.
+
+This is used whn you would like the variable to set to a value, only it is has not already been set.
+
+```bash
+FOO ?= bar
+```
+
+Which is short hand for something like this
+
+```bash
+ifeq ($(x), undefined)
+y = $(x)
+endif
+```
+
 ### Dereference
 
 To dereference a variable to access its contents, the dollar sign '$' is used.
@@ -180,4 +196,4 @@ $^ | List of all prerequisites
 $? | List of all prerequisites that are newer than the target
 $* | The "stem" of an implicit or pattern rule
 
-Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information.
+There is a lot more to variables in makefiles but this will get you started.  Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information and to delve into some cool subjects like nested variables or computed variable names.
