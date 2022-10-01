@@ -213,6 +213,8 @@ debug | sets compiler flags variable before calling all
 release | sets compiler flags variable before calling all
 test | calls release before building and running the boost unit test based files before executing each test
 
+Before you try and run the file, make sure you look at the system you will be running on and used the correct values for CXX and BOOST_ROOT.
+
 ## Summary
 
 There is a lot more to variables in makefiles but this will get you started.  
