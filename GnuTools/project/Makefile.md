@@ -14,7 +14,7 @@ target: prerequisites
 ```
 
 Wow, that is a lot of words that, if you are like most people, do not tell you crap, so let's break that down a bit.
-Please note, my descriptions may not be as accurate as the make document, but are accurate to the level we need them at this point.
+Please note, my descriptions may not be as accurate as the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works), but are accurate to the level we need them at this point.
 
 The **target** is the label for the task, the **prerequisites** are targets or commands that need to occur before executing the target, and the **recipe** is the actual rules that will be executed.
 
@@ -100,3 +100,84 @@ file2.o:
 This demonstrates the steps and can be a fun way to play with rules.
 
 ## Playing with Variables
+
+Ok, now that we have an understanding of the basic processing of a makefile, lets dig into variable support.
+
+First and foremost, variables in makefiles are text strings.  While you can put numbers and all sorts of other crazy things into a makefile variable, they are stored and treated like strings.  The value for variables are expanded when read, meaning that you can use plain text or append other variable or even results from executed commands.
+
+### Declaration
+
+Declaration and setting of a variable is pretty straight forward and generally come in one of three flavors.
+
+```bash
+variable = "my value"
+variable := "my value"
+variable ::= "my value"
+```
+
+please note, the quotes in the above example are actually not required but is a good idea for controlling exactly what is ingested.
+
+Variables defined with ‘=’ are recursively expanded variables. Variables defined with ‘:=’ or ‘::=’ are simply expanded variables; these definitions can contain variable references which will be expanded before the definition is made.
+
+### Dereference
+
+To dereference a variable to access its contents, the dollar sign '$' is used.
+
+```bash
+x = "hello"
+y = $(x)
+```
+
+Please note, the parentheses are required when referencing a variable but you may also run across brackets {} as well.  Parentheses () and brackets {} are treated the same by make.
+
+### Append
+
+To append values to a variable, the += operator is used.
+
+```bash
+x = "hello"
+x += " world"
+```
+
+Variable references in the right-hand side will be expanded if and only if the original variable was defined as a simply-expanded variable.  More on those below.
+
+### Recursively Expanded Variables
+
+When defining a recursively-expanded variable, the contents of the right-hand side are stored as-is. If a variable reference is present, the reference itself is stored **not the value of the variable**. Make waits to expand the variable references until the variable is actually used.
+
+```bash
+x = hello
+y = $(x) # Both $(x) and $(y) will now yield "hello"
+x = world # Both $(x) and $(y) will now yield "world"
+```
+
+In the above example, the definition of y is recursive. The reference to $(x) doesn't get expanded until $(y) is expanded. This means that whenever the value of x changes, the value of y will change as well.
+
+Recursively-expanded variables are a powerful but are easy to misunderstoodl. They can be used to create constructs that resemble templates or functions, or even to automatically generate portions of a makefile. They can also be the source of hard-to-debug problems. Be careful to only use recursively-expanded variables when necessary.
+
+### Simply Expanded Variables
+
+Simply-expanded variables behave like variables from traditional programming languages. The expression on the right-hand side is evaluated, and the result is stored in the variable. If the right-hand side contains a variable reference, that variable is expanded before the assignment takes place.
+
+Single- and double-colon assignment are equivalent. The POSIX make standard only mentions the ::= form, so implementations with strict standards compliance may not support the single-colon declaration but I have not run across one.
+
+```bash
+x := hello
+y ::= $(x) # Both $(x) and $(y) will now yield "hello"
+x := world # $(x) will now yield "world", and $(y) will yield "hello"
+```
+
+### Automatic Variables
+
+Make also supports a number of special variables.  These variables can have a different value for each rule in a makefile and are meant to make writing rules simpler. The automatic variables can only be used in the recipe portion of a rule i.e. assigned while processing.
+
+Variable | Description
+:------: | ---------------------
+$@ | File name of the rule's target
+$% | The target member's name, if the rule's target is an archive
+$< | File name of the first prerequisite
+$^ | List of all prerequisites
+$? | List of all prerequisites that are newer than the target
+$* | The "stem" of an implicit or pattern rule
+
+Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information.
