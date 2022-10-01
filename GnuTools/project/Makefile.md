@@ -13,17 +13,32 @@ target: prerequisites
 	recipe
 ```
 
-Wow, that is a lot of words that if you are like most people, do not tell you crap so let's break that down a bit.  Please note, my descriptions may not be completely accurate as the make document but are accurate to the level we need them at this point.
+Wow, that is a lot of words that, if you are like most people, do not tell you crap, so let's break that down a bit.
+Please note, my descriptions may not be as accurate as the make document, but are accurate to the level we need them at this point.
 
-The target is the label for the task, the prerequisites are targets that need to occur before executing the target, and the recipe is the actual rules that will be executed.
+The **target** is the label for the task, the **prerequisites** are targets or commands that need to occur before executing the target, and the **recipe** is the actual rules that will be executed.
+
+### Target
 
 Much like the label of a function in C/C++, the target is a named handle for that target.  Additionally, or more specifically, the target is actually a file name, how that file name is treated is dependent on the recipe.  For now, just remember that a target can be either a task label or a file name and we will discuss the why in just a bit.
 
-Prerequisites are zero or more dependencies the target requires to have executed prior to its own processing.  These can be variable assignment, inline functions, or calls to additional targets.  If a target depends on another target, it guarantees that target will be run prior, and if a target depends on a file, it will check to see if that file has changed to avoid executing redundantly.
+### Prerequisites
+
+Prerequisites are zero or more dependencies the target requires to have executed prior to its own processing.  These can be variable assignment, inline functions, or calls to additional targets.  If a target depends on another target, it guarantees that target will be run prior, and if a target depends on a file, it will check to see if that file has changed to avoid executing redundantly.  When reading a list of prerequisites, you should read them from right to left as that is how they will be executed.
+
+For example:
+
+```bash
+$(OBJECTS): $(OBJECTS_DIRECTORY)/%.o: $(SOURCES_DIRECTORY)/%.cpp
+```
+
+The target $(OBJECTS) and the prerequisites $(OBJECTS_DIRECTORY)/%.o and $(SOURCES_DIRECTORY)/%.cpp.  $(SOURCES_DIRECTORY)/%.cpp will be executed first, followed by $(OBJECTS_DIRECTORY)/%.o, and only then will the target $(OBJECTS) recipe be executed.
+
+### Recipe
 
 Last but not least we have the recipe.  The recipe is one or more sequential steps that can consist of shell script, shell commands, additional targets, built in functions or just about anything else one could want.
 
-The kicker is that each item in a recipe must be proceeded by the tab character.  A real tab character ASCII code 09 = HT ( Horizontal Tab ) and not just white space.
+The kicker is that **each item in a recipe must be proceeded by the tab character**.  A **REAL** tab character, ala ASCII code 09 = HT ( Horizontal Tab ) and not just white space.  Space, ASCII code 20, will look right but fail to execute the line.
 
 For further clarification, let's review the following makefile source.
 
@@ -49,9 +64,11 @@ clean:
 
 As you can see, there are five separate targets in this example (all, program, file1.o, file2.c, and clean).  
 
-If you were to call the clean target, make clean, only a single target would be executed, calling the shell command rm -f on all *.o files and the program.  Pretty straight forward right?
+If you were to call the clean target, ```make clean```, only a single target would be executed, whose recipe consists of a single shell command rm -f on all *.o files and the "program" directory within the current directory.
 
-If you were to call the all target, make all, the first thing to be executed would be the prerequisite targets, and their prerequisites targets, until the final target executes its recipes.  Once that recipes is complete, the calling targets recipe is executed all the way back up the line.  The echo statements would produce the following:
+Pretty straight forward right?
+
+If you were to call the all target, ```make all```, the first thing to be executed would be the ```all``` targets prerequisite target ```program```, ```programs``` children prerequisite targets ```main.cpp file1.o file2.o``` , the children prerequisites  ```file1.cpp file1.h & file2.cpp```, the children's recipes, the ```program``` recipte, and finally the ```all``` targets recipe.  The echo statements would produce the following:
 
 ```bash
 Building file1.o
@@ -60,7 +77,7 @@ Compiling main.cpp
 Finished program
 ```
 
-But wait, what about the target main.cpp?  Well, it gets called before file1 or file2 but does not have a named target but it does have a file and this will be processed by the default make rules where the presence of the main.ccp file will execute the targets recipe.
+But wait, what about the target main.cpp?  Well, it gets called before file1 or file2, but it does not have a named target. What it does have is a file, and this is processed by the default make rules where the presence of the main.ccp file will execute the targets recipe.
 
 You can prove this by creating a makefile, file2.cpp, file1.cpp, main.cpp.  Populate the files and run make all.
 
