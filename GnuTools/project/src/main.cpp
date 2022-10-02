@@ -14,10 +14,10 @@ int main() {
 
   // Simple recursion algorithm to give us some run time
   for (int ii=10000;ii>0;ii--) {
-    int recur = recursiveFactorial(ii);
-    std::cout << "Recursive length is " << recur << std::endl;
+    recursiveFactorial(ii);
+    // std::cout << "Recursive length is " << recur << std::endl;
   }
-
+  // example template usage for some gprof variety
   int ii = maximum(9,5,3);
 	double dd = maximum(0.3,9.8,5.4);
 	char letter = maximum('b','d','A');
