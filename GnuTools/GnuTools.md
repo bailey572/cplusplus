@@ -51,16 +51,62 @@ For more information, check out the projects makefile and writeup [Makefile Writ
 For all of the information you could ever want, please refer to the [GMake Official Documentation](https://www.gnu.org/software/make/manual/make.html)
 
 ## gprof
-gprof calculates the amount of time spent in each routine.
+
+gprof calculates the amount of time spent in each routine and is a good first step profiler.  Straight from the man pages for the tool we get:
+
+>"gprof" produces an execution profile of C, Pascal, or Fortran77 programs.  The effect of called routines is incorporated in the profile of each caller.  The profile data is taken from the call graph profile file  (gmon.out default) which is created by programs that are compiled with the -pg option of "cc", "pc", and "f77".  
+
+>The -pg option also links in versions of the library routines that are compiled for profiling. "Gprof" reads the given object file (the default is "a.out") and establishes the relation between its symbol table and the call graph profile from gmon.out.  If more than one profile file is specified, the "gprof" output shows the sum of the profile information in the given profile files.
+
+Great, so how de actually use it.  First step, we need to make sure our application gets built with the -pg option.  We do this by creating the gprof target in our existing makefile to update the flags, perform the build and then execute a run.
+
+```bash
+# add -pg flags (p=program instrumentation, g=debug option) to the cpp compile
+gprof: CXXFLAGS += -pg
+# perform a debug build before running recipe
+gprof: debug
+# run the application to produce grprof data
+	./bin/project
+# move the gmon.out file
+	mv gmon.out ./bin/gmon.out
+# run gprof against the gmon.out and pipe results to the text file
+# The -q option causes "gprof" to print the call graph analysis
+	gprof -q ./bin/project ./bin/gmon.out > ./bin/gprofdata.txt
+```
+
+Now all we need to do is call ```make clean; make debug``` and read the gprofdata.txt in our favorite text editor to review the results.
+
+The entries are sorted by time spent in the function and its subroutines
+
+Field | Meaning
+:----: | :----------------
+Index | Entries are numbered with consecutive integers.  This same number is referenced in the name
+%time | This is the percentage of the `total' time that was spent in this function and its children.  Note that due to different viewpoints, functions excluded by options, etc, these numbers will NOT add up to 100%
+Self | This is the total amount of time spent in this function
+Children | This is the total amount of time propagated into this function by its children
+Called | This is the number of times the function was called. If the function called itself recursively, the number only includes non-recursive calls, and is followed by a `+' and the number of recursive calls
+Name | The name of the current function.  The index number is printed after it.  If the function is a member of a cycle, the cycle number is printed between the function's name and the index number
+
+Many times the top few methods are victims of the subroutines so follow the children.  If you happen upon a method that accounts for a large percentage of processing time, generally > ~40% or more of the time, investigate the code and see if there is a way to simplify. If you don’t have the skills to determine a good refactor of the code, phone a friend.  Sometime a second set of eyes can help find the efficiency.  Of course, some functions just take time.  Be careful that you don’t fall into the trap of only concerning yourself on reducing the time it takes to get through a function, many times you can reduce the number of times the function is called and make a bigger impact to performance gains that way.
+
+When you have traced a performance issue down to a method or even a single line of code, you can put timing calipers around the suspect code and pinpoint the exact issue.  This is done by adding instrumentation timing code to the executable itself or leveraging a caliper library.  
+
+In some instances, you can try using compiler options to see if you can aggressively optimize the build in that specific area.
+
+In either case, you will need building a release version and not using grpof for the final performance numbers.
+When addressing performance issues, don’t fall into the trap of only concerning yourself on reducing the time it takes to get through the method, many times you can reduce the number of times the function is called and make a bigger impact.
+
 
 ## strace
+
 strace intercepts and records the system calls which are called by the process and the signals which are received by a process
 
 ## sprof
 sprof calculates the amount of time spent in each routine of a shared object.
 
 ## valgrind
-valgrind is  a flexible program for debugging and profiling Linux executables
+
+valgrind is a flexible program for debugging and profiling Linux executables
 
 ```Usage: valgrind --tool=toolname program args```
 

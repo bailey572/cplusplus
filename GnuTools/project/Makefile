@@ -88,7 +88,7 @@ MKDIR_P := mkdir -p -v
 
 # A phony target is one that is not really the name of a file; rather it is just a name for a recipe to be
 # executed when you make an explicit request.
-.PHONY: all build clean debug release test
+.PHONY: all build clean debug release test grprof
 
 # Make all the top-level targets the makefile knows about. First calls target build and then $(APP_DIRECTORY)/$(TARGET)
 all: build $(APP_DIRECTORY)/$(TARGET)
@@ -175,3 +175,15 @@ test: release $(TEST_BINS)
 # Boost Unit test supports three output options HRF=Human Readable Format, CLF=command line feed ,XML=XML
 # and the following log levels all|success|test_suite|unit_scope|message|warning|error|cpp_exception|system_error|fatal_error|nothing
 	$(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(@F).test --output_format=CLF --log_level=all > $(TESTS_DIRECTORY)/$(APP_DIRECTORY)/$(^F)-report.log
+
+# add -pg flags (p=program instrumentation, g=debug option) to the cpp compile
+gprof: CXXFLAGS += -pg
+# perform a debug build before running recipe
+gprof: debug
+# run the application to produce grprof data
+	./bin/project
+# move the gmon.out file
+	mv gmon.out ./bin/gmon.out
+# run gprof against the gmon.out and pipe results to the text file
+# The -q option causes "gprof" to print the call graph analysis
+	gprof -q ./bin/project ./bin/gmon.out > ./bin/gprofdata.txt

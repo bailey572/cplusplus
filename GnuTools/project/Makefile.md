@@ -202,7 +202,7 @@ If you have pulled down this repository, you will find a heavily commented [make
 
 The top section contains a collection of simply expanded variables defining the environment, some shell commands, and the binaries name.
 
-The rest of the file contains the definitions for all of the targets (all, build, clean, debug, release, & test), their prerequisites, and recipes.
+The rest of the file contains the definitions for all of the targets (all, build, clean, debug, release, test), their prerequisites, and recipes.
 
 Target | Description
 :----: | :-----------------------
@@ -222,5 +222,3 @@ There is a lot more to variables in makefiles but this will get you started.
 Check out the [make document](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for further information and to delve into some cool subjects like nested variables or computed variable names.
 
 Also, there is a pretty good quick reference at [Rip Tutorial](https://riptutorial.com/makefile).
-
- 
