@@ -151,9 +151,9 @@ release: all
 clean:
 	@echo "Cleaning..."
 	@$(RM) $(OBJECTS_DIRECTORY)
-	@$(RM) $(APP_DIRECTORY)/$(TARGET)
-	@$(RM) $(TARGET)
+	@$(RM) $(APP_DIRECTORY)
 	@$(RM) $(TESTS_DIRECTORY)/$(APP_DIRECTORY)
+	
 
 # Wildcard is a built in function for filenames. If TESTS_DIRECTORY has files named 'foo.cpp bar.cpp max.txt', 
 # TEST_SRCS will only contain 'foo.cpp bar.cpp'.
