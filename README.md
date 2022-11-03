@@ -8,8 +8,11 @@ It is often interesting to bounce around languages, learn new concepts, and grow
 
 As I go forward, I will attempt to keep the below list updated by at least subject and leave public in the hopes that at some point it may be useful for someone else as well as myself.
 
-* [GNU Tools Discussion](./GnuTools/GnuTools.md)
-* [Simple Compile Walk through](./GnuTools/Compile.md)
+* [GNU Tools Discussion](./GnuTools/GnuTools.md) - a good starting point to discuss some of my standard Linux development tools
+  * [Compilation using GNU tools (gcc and gmake)](./GnuTools/Compile.md)- Got to start with gcc and the makefile
+  * [The mystery of the Makefile](./GnuTools/project/Makefile.md) - Something so special it needs its own page
+  * [Unit Testing](./GnuTools/UnitTesting.md) - A quick introduction to unit testing
+* [C/C++ walk through](./GnuTools/BasicCpp/cpp.md)
 
 ## Warning
 
