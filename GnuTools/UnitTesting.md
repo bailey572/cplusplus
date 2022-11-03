@@ -45,10 +45,10 @@ The framework does all of this while keeping track of all passed/failed assertio
 
 Fear not, we are getting there.  One last thing I would like to bring to your attention is that boost provides a lot of flexibility in how you can bring all of this in.  The first thing to that you must ask yourself is how cotrolled do you want your setup to be?  The **The Unit Test Framework** supports four different usage variants, again pulled from the [official documentation](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/usage-variants.html).
 
-* [The static library variant](https://www.boost.org/doc/libs/1_35_0/libs/test/doc/html/utf/user-guide/usage-variants/static-lib-variant.html) - link test modules source file to a single static library (quick compile, larger test files)
-* [The dynamic library variant](https://www.boost.org/doc/libs/1_35_0/libs/test/doc/html/utf/user-guide/usage-variants/dynamic-lib-variant.html) - link test modules source file to a single dynamic library (saves disk space)
-* [The single-header variant](https://www.boost.org/doc/libs/1_35_0/libs/test/doc/html/utf/user-guide/usage-variants/single-header-variant.html) - Pull in a single header for compilation into the test modules source files themselves (longer compile time and storage need but lower link dependencies)
-* [The external test runner variant](https://www.boost.org/doc/libs/1_35_0/libs/test/doc/html/utf/user-guide/usage-variants/extern-test-runner-variant.html) - Build the test runner as a dynamic library for common use by external test running tools (most complex case)
+* [The static library variant](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/usage-variants/static-lib-variant.html) - link test modules source file to a single static library (quick compile, larger test files)
+* [The dynamic library variant](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/usage-variants/dynamic-lib-variant.html) - link test modules source file to a single dynamic library (saves disk space)
+* [The single-header variant](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/usage-variants/single-header-variant.html) - Pull in a single header for compilation into the test modules source files themselves (longer compile time and storage need but lower link dependencies)
+* [The external test runner variant](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/usage-variants/extern-test-runner-variant.html) - Build the test runner as a dynamic library for common use by external test running tools (most complex case)
 
 While each has its place they all follow the same general steps.  For this write up, we are going with the most portable option, the single-header variant.
 
@@ -72,7 +72,7 @@ Then create a unit test file with the following information
 #include <boost/test/included/unit_test.hpp>
 ```
 
-The #define will provide scope for the tests and the #include brings in the unit test framework into the unit test file.  Once that is done, we just need to add a few unit tests.  This can be done by either [manually](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/test-organization/manual-nullary-test-case.html) or [automatically](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/test-organization/auto-nullary-test-case.html) registering the test.  Again more fun reading but lets just manually register for now by leveraging the BOOST_TEST_CASE macro.  The below example is pulled from the basic projects [unitTest_BasicMath.cpp](./project/tests/bin/unitTest_BasicMath.test) with the assumption that the #include "BasicMath.h" is present in the unit test source code.
+The #define will provide scope for the tests and the #include brings in the unit test framework into the unit test file.  Once that is done, we just need to add a few unit tests.  This can be done by either [manually](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/test-organization/manual-nullary-test-case.html) or [automatically](https://www.boost.org/doc/libs/1_37_0/libs/test/doc/html/utf/user-guide/test-organization/auto-nullary-test-case.html) registering the test.  Again more fun reading but lets just manually register for now by leveraging the BOOST_TEST_CASE macro.  The below example is pulled from the basic projects [unitTest_BasicMath.cpp](./project/tests/unitTest_BasicMath.cpp) with the assumption that the #include "BasicMath.h" is present in the unit test source code.
 
 ```bash
 /* Test known version */
