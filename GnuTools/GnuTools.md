@@ -18,6 +18,7 @@ Fundamentally, GCC follows a three stage architecture **(Front End, Middle End, 
  ![Three Stage Architecture](https://upload.wikimedia.org/wikipedia/commons/c/cc/Compiler_design.svg "Compiler Design")
 
 With g++, the **Front End** is responsible for initial execution, verification of execution dependencies, interpretation of user options, and orchestration of the run.  Verification of execution dependencies seems like a simple task such as making sure a file exists but goes far further than first glance.  The **Front End** not only has to look for the existence of the source code but also parse its contents.  In the case of C++ this not only consists of the content of .cpp files but also any dependency called out through included statement recursively embedded.  This is accomplished through the [Recursive_descent_parser](https://en.wikipedia.org/wiki/Recursive_descent_parser).  Which is responsible for the creation of the [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) through [preprocessing](https://en.wikipedia.org/wiki/Preprocessor), [lexical analysis](https://en.wikipedia.org/wiki/Lexical_analysis), [syntactic analysis](https://en.wikipedia.org/wiki/Parsing), and [semantic analysis](https://en.wikipedia.org/wiki/Semantic_analysis_(compilers)).  Each of the previous links are worth a read but fundamentally you can think of each as:
+
 * [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) - structural, content related tree representation of the source code
 * [preprocessing](https://en.wikipedia.org/wiki/Preprocessor) - execute instructions to modify code prior to lexical analysis
 * [lexical analysis](https://en.wikipedia.org/wiki/Lexical_analysis) - parsing source characters into lexical tokens.  This is the initial part of reading and analyzing the program text. The text is read and divided into tokens, each of which corresponds to a symbol in the programming language, e.g., a variable name, keyword or number.
@@ -31,6 +32,7 @@ Often each operation, through checking and transformation, establishes stronger 
 The gcc and g++ execution have small deviations, but follow the same fundamental steps.  The below image is a good reference for remembering the stages.
 
 ![GCC compilation pipeline](https://upload.wikimedia.org/wikipedia/commons/9/9a/Preprocessor.png "GCC Compilation Pipeline")
+
 ## gmake
 
 Make is a build automation tool for compiling source code into libraries and executables that has a long history.  Originally created by Stuart Feldman in April 1976 at Bell Labs, this tool has gone through multiple iterations, forks, and rewrites.  The most common implementation has to be gmake (GNU Make) which is the standard implementation of Make for Linux. It provides several extensions over the original Make, such as conditionals, built-in functions, and variables.
@@ -57,7 +59,6 @@ For all of the information you could ever want, please refer to the [GMake Offic
 gprof calculates the amount of time spent in each routine and is a good first step profiler.  Straight from the man pages for the tool we get:
 
 >"gprof" produces an execution profile of C, Pascal, or Fortran77 programs.  The effect of called routines is incorporated in the profile of each caller.  The profile data is taken from the call graph profile file  (gmon.out default) which is created by programs that are compiled with the -pg option of "cc", "pc", and "f77".  
-
 >The -pg option also links in versions of the library routines that are compiled for profiling. "Gprof" reads the given object file (the default is "a.out") and establishes the relation between its symbol table and the call graph profile from gmon.out.  If more than one profile file is specified, the "gprof" output shows the sum of the profile information in the given profile files.
 
 Great, so how de actually use it.  First step, we need to make sure our application gets built with the -pg option.  We do this by creating the gprof target in our existing makefile to update the flags, perform the build and then execute a run.
@@ -98,12 +99,12 @@ In some instances, you can try using compiler options to see if you can aggressi
 In either case, you will need building a release version and not using grpof for the final performance numbers.
 When addressing performance issues, don’t fall into the trap of only concerning yourself on reducing the time it takes to get through the method, many times you can reduce the number of times the function is called and make a bigger impact.
 
-
 ## strace
 
 strace intercepts and records the system calls which are called by the process and the signals which are received by a process
 
 ## sprof
+
 sprof calculates the amount of time spent in each routine of a shared object.
 
 ## valgrind
@@ -113,16 +114,19 @@ valgrind is a flexible program for debugging and profiling Linux executables
 ```Usage: valgrind --tool=toolname program args```
 
 Tools:
+
 * memcheck: is a fine-grained memory checker
 * cachegrind: is a cache simulator. Annotates every line of program with the number of instructions executed and cache misses incurred
 * Callgrind: adds call graph tracing to cachegrind.
 * Massif: a heap profiler. Measures heap memory usage.
 
-### memcheck 
+### memcheck
+
 ```usage: --tool=memcheck```
 memcheck is valgrind’s heavyweight checking tool. All reads and writes of memory are checked, and calls to malloc/new/free/delete are intercepted.
 
 Detects:
+
 * Use of uninitialized memory
 * Reading/writing memory after it has been free’d
 * Reading/writing off the end of malloc’d blocks
@@ -132,9 +136,11 @@ Detects:
 * Overlapping src and dst pointers in memcpy() and related functions
 
 ### cachegrind
+
 cachegrind is a tool for finding places where programs interact badly with typical modern superscalar processors and run slowly as a result. In particular, it will do a cache simulation of your program, and optionally a branch predictor simulation, and can then annotate your source line-by-line with the number of cache misses and branch mis-predictions.
 
 cachegrind collected statistics
+
 * L1 instruction cache reads and misses
 * L1 data cache reads and read misses, writes and write misses
 * L2 unified cache reads and read misses, writes and write misses.
@@ -142,6 +148,7 @@ cachegrind collected statistics
 * Indirect branches and mis-predicted indirect branches. An indirect branch is a jump or call to a destination only known at run time.
 
 ### massif
+
 ```usage: --tool=massif```
 Massif is a heap profiler. It measures how much heap memory your program uses. This includes both the useful space, and the extra bytes allocated for book-keeping purposes and alignment purposes. It can also measure the size of your program’s stack, although it does not do so by default.
 
@@ -150,7 +157,6 @@ Reducing memory footprint can speed up your program as they will avoid paging an
 Massif can also indicate memory leaks that memcheck will miss. If a pointer is still reachable at termination, memcheck will miss this as a memory leak.
 
 Output from this tool produces a memory graph snapshot
+
 * Normal snapshots are indicated by ‘:’ and ‘.’
 * Detailed snapshots are indicated by ‘@’ or ‘,’
-
-
